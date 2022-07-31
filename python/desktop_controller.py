@@ -1,5 +1,7 @@
 import ctypes
 import time
+import subprocess
+import pathlib
 
 InputEventCode = int
 
@@ -22,8 +24,17 @@ class DesktopController:
         self.desktop_controller.desktop_controller_free(self.c_desktop_controller_ptr)
 
     def input_event(self, event : InputEventCode):
+        """Requires root user"""
         self.desktop_controller.input_event(self.c_desktop_controller_ptr, event)
+
+    def screenshot(self, filepath : pathlib.Path):
+        process = subprocess.run(['gnome-screenshot', "-f", str(filepath)])
 
 desktop_controller = DesktopController()
 
-desktop_controller.input_event(InputEventCodes.KEY_SPACE)
+# KEY_SPACE event
+# Requires root user
+# desktop_controller.input_event(InputEventCodes.KEY_SPACE)
+
+# Take screenshot
+# desktop_controller.screenshot(pathlib.Path("Screenshot.png"))
