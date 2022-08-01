@@ -1,6 +1,7 @@
 # Argos DesktopRL
 *.swp
 Screenshot.png
+*__pycache__*
 
 # Prerequisites
 *.d

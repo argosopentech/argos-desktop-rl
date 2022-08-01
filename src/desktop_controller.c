@@ -28,7 +28,6 @@ void *desktop_controller_init() {
       malloc(sizeof(struct desktop_controller));
   int fd = open("/dev/uinput", O_WRONLY | O_NONBLOCK);
   desktop_controller_ptr->fd = fd;
-  int eventCode = KEY_SPACE;
   struct uinput_setup usetup;
 
   /*
@@ -36,7 +35,11 @@ void *desktop_controller_init() {
    * created, to pass key events
    */
   ioctl(fd, UI_SET_EVBIT, EV_KEY);
-  ioctl(fd, UI_SET_KEYBIT, eventCode);
+  ioctl(fd, UI_SET_KEYBIT, KEY_SPACE);
+  ioctl(fd, UI_SET_KEYBIT, KEY_W);
+  ioctl(fd, UI_SET_KEYBIT, KEY_A);
+  ioctl(fd, UI_SET_KEYBIT, KEY_S);
+  ioctl(fd, UI_SET_KEYBIT, KEY_D);
 
   memset(&usetup, 0, sizeof(usetup));
   usetup.id.bustype = BUS_USB;
@@ -67,6 +70,7 @@ void input_event(void *self, int eventCode) {
   /* Key press, report the event, send key release, and report again */
   emit(fd, EV_KEY, eventCode, 1);
   emit(fd, EV_SYN, SYN_REPORT, 0);
+  sleep(1);
   emit(fd, EV_KEY, eventCode, 0);
   emit(fd, EV_SYN, SYN_REPORT, 0);
 }
