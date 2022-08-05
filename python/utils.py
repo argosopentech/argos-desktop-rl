@@ -1,7 +1,8 @@
 import pathlib
 import time
+import os
 
-DATA_DIR = pathlib.Path.home() / "Desktop" / "desktop-rl-data"
+DATA_DIR = pathlib.Path().home() / "desktop-rl-data"
 DATA_DIR.mkdir(parents=True, exist_ok=True)
 
 
