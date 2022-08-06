@@ -2,9 +2,10 @@ import pathlib
 from collections import defaultdict
 
 DATA_DIRECTORY = pathlib.Path.home() / "data"
-LOG_FILE_PATH = DATA_DIRECTORY / "log.txt" 
+LOG_FILE_PATH = DATA_DIRECTORY / "log.txt"
 ACTIONS_DIRECTORY = DATA_DIRECTORY / "actions"
 SCREENSHOTS_DIRECTORY = DATA_DIRECTORY / "screenshots"
+
 
 class CraftLog:
     def __init__(self, log_str):
@@ -22,6 +23,7 @@ class CraftLog:
         self.position_y = parts[1]
         self.position_z = parts[2]
 
+
 class Action:
     def __init__(self, action_dir):
         self.timestamp = int(action_dir.name)
@@ -30,12 +32,19 @@ class Action:
             self.actions = action_file.readlines()
             self.actions = [action.strip() for action in self.actions]
 
+
 class Screen:
     def __init__(self, screenshot_dir):
         self.timestamp = int(screenshot_dir.name)
         self.screenshot_filepath = screenshot_dir / "screen.png"
 
+
 class Frame:
+    def __init__(self):
+        self.craft_log = None
+        self.action = None
+        self.screen = None
+
     def set_craft_log(self, craft_log):
         self.craft_log = craft_log
 
@@ -44,6 +53,7 @@ class Frame:
 
     def set_screen(self, screen):
         self.screen = screen
+
 
 # Read log file
 logs = list()

@@ -18,7 +18,5 @@ while True:
     d.input_event(action)
     action_str = desktop_controller.InputEvent.input_events_dict[action]
     print(action_str)
-    with open(get_frame_dir() / 'action', 'a') as action_file:
+    with open(get_frame_dir() / "action", "a") as action_file:
         action_file.write(action_str + "\n")
-
-
