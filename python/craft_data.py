@@ -19,9 +19,9 @@ class CraftLog:
         self.timestamp = int(timestamp_str[1:-1])
 
     def parse_on_position(self, parts):
-        self.position_x = parts[0]
-        self.position_y = parts[1]
-        self.position_z = parts[2]
+        self.position_x = float(parts[0])
+        self.position_y = float(parts[1])
+        self.position_z = float(parts[2])
 
 
 class Action:
@@ -44,6 +44,7 @@ class Frame:
         self.craft_log = None
         self.action = None
         self.screen = None
+        self.loss = None
 
     def set_craft_log(self, craft_log):
         self.craft_log = craft_log
@@ -53,6 +54,9 @@ class Frame:
 
     def set_screen(self, screen):
         self.screen = screen
+
+    def set_loss(self, loss):
+        self.loss = loss
 
 
 # Read log file
@@ -77,3 +81,19 @@ for action in actions:
     frames[action.timestamp].set_action(action)
 for screen in screens:
     frames[screen.timestamp].set_screen(screen)
+
+# Compute loss
+timestamps = list(frames.keys())
+for timestamp in timestamps:
+    previous_frame = frames[timestamp - 1]
+    current_frame = frames[timestamp]
+    next_frame = frames[timestamp + 1]
+
+    if previous_frame.craft_log is None or next_frame.craft_log is None:
+        continue
+
+    previous_x = previous_frame.craft_log.position_x
+    next_x = next_frame.craft_log.position_x
+
+    loss = next_x - previous_x
+    current_frame.set_loss(loss)
