@@ -23,6 +23,7 @@ class CraftLog:
 
 class Action:
     def __init__(self, action_dir):
+        self.timestamp = int(action_dir.name)
         self.action_filepath = action_dir / "action"
         with open(self.action_filepath, "r") as action_file:
             self.actions = action_file.readlines()
@@ -30,6 +31,7 @@ class Action:
 
 class Screen:
     def __init__(self, screenshot_dir):
+        self.timestamp = int(screenshot_dir.name)
         self.screenshot_filepath = screenshot_dir / "screen.png"
 
 # Read log file
