@@ -3,6 +3,7 @@ import pathlib
 DATA_DIRECTORY = pathlib.Path.home() / "data"
 LOG_FILE_PATH = DATA_DIRECTORY / "log.txt" 
 ACTIONS_DIRECTORY = DATA_DIRECTORY / "actions"
+SCREENSHOTS_DIRECTORY = DATA_DIRECTORY / "screenshots"
 
 class CraftLog:
     def __init__(self, log_str):
@@ -27,6 +28,10 @@ class Action:
             self.actions = action_file.readlines()
             self.actions = [action.strip() for action in self.actions]
 
+class Screen:
+    def __init__(self, screenshot_dir):
+        self.screenshot_filepath = screenshot_dir / "screen.png"
+
 # Read log file
 logs = list()
 with open(LOG_FILE_PATH, "r") as log_file:
@@ -36,3 +41,7 @@ logs = [CraftLog(log_str) for log_str in logs]
 # Read action files
 action_dirs = ACTIONS_DIRECTORY.iterdir()
 actions = [Action(action_dir) for action_dir in action_dirs]
+
+# Read screens
+screenshot_dirs = SCREENSHOTS_DIRECTORY.iterdir()
+screens = [Screen(screenshot_dir) for screenshot_dir in screenshot_dirs]
