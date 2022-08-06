@@ -2,11 +2,7 @@ import pathlib
 
 DATA_DIRECTORY = pathlib.Path.home() / "data"
 LOG_FILE_PATH = DATA_DIRECTORY / "log.txt" 
-
-logs = list()
-
-with open(LOG_FILE_PATH, "r") as log_file:
-    logs = log_file.readlines()
+ACTIONS_DIRECTORY = DATA_DIRECTORY / "actions"
 
 class CraftLog:
     def __init__(self, log_str):
@@ -23,3 +19,20 @@ class CraftLog:
         self.position_x = parts[0]
         self.position_y = parts[1]
         self.position_z = parts[2]
+
+class Action:
+    def __init__(self, action_dir):
+        self.action_filepath = action_dir / "action"
+        with open(self.action_filepath, "r") as action_file:
+            self.actions = action_file.readlines()
+            self.actions = [action.strip() for action in self.actions]
+
+# Read log file
+logs = list()
+with open(LOG_FILE_PATH, "r") as log_file:
+    logs = log_file.readlines()
+logs = [CraftLog(log_str) for log_str in logs]
+
+# Read action files
+action_dirs = ACTIONS_DIRECTORY.iterdir()
+actions = [Action(action_dir) for action_dir in action_dirs]
