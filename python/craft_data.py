@@ -1,4 +1,5 @@
 import pathlib
+from collections import defaultdict
 
 DATA_DIRECTORY = pathlib.Path.home() / "data"
 LOG_FILE_PATH = DATA_DIRECTORY / "log.txt" 
@@ -34,6 +35,16 @@ class Screen:
         self.timestamp = int(screenshot_dir.name)
         self.screenshot_filepath = screenshot_dir / "screen.png"
 
+class Frame:
+    def set_craft_log(self, craft_log):
+        self.craft_log = craft_log
+
+    def set_action(self, action):
+        self.action = action
+
+    def set_screen(self, screen):
+        self.screen = screen
+
 # Read log file
 logs = list()
 with open(LOG_FILE_PATH, "r") as log_file:
@@ -47,3 +58,12 @@ actions = [Action(action_dir) for action_dir in action_dirs]
 # Read screens
 screenshot_dirs = SCREENSHOTS_DIRECTORY.iterdir()
 screens = [Screen(screenshot_dir) for screenshot_dir in screenshot_dirs]
+
+# Build frames map
+frames = defaultdict(Frame)
+for log in logs:
+    frames[log.timestamp].set_craft_log(log)
+for action in actions:
+    frames[action.timestamp].set_action(action)
+for screen in screens:
+    frames[screen.timestamp].set_screen(screen)
