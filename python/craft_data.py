@@ -1,11 +1,13 @@
 import pathlib
 import math
+import shutil
 from collections import defaultdict
 
 DATA_DIRECTORY = pathlib.Path.home() / "data"
 LOG_FILE_PATH = DATA_DIRECTORY / "log.txt"
 ACTIONS_DIRECTORY = DATA_DIRECTORY / "actions"
 SCREENSHOTS_DIRECTORY = DATA_DIRECTORY / "screenshots"
+TRAINING_DATA_DIRECTORY = DATA_DIRECTORY / "training_data"
 
 
 class CraftLog:
@@ -93,16 +95,42 @@ for timestamp in timestamps:
     if previous_frame.craft_log is None or next_frame.craft_log is None:
         continue
 
+    if current_frame.screen is None:
+        continue
+
+    if current_frame.action is None:
+        continue
+
     previous_x = previous_frame.craft_log.position_x
     next_x = next_frame.craft_log.position_x
 
     loss = next_x - previous_x
     current_frame.set_loss(loss)
 
+
 # Select data
 frames_list = frames.items()
-frames_list = sorted(
+frames_list = filter(lambda x: x[1].loss is not None, frames_list)
+frames_list_sorted = sorted(
     frames_list,
-    key=lambda x: x[1].loss if x[1].loss is not None else -1 * math.inf,
+    key=lambda x: x[1].loss,
     reverse=True,
 )
+SELECTION_RATIO = 0.15
+training_frames = frames_list_sorted[: int(len(frames_list_sorted) * SELECTION_RATIO)]
+
+# Export training data
+shutil.rmtree(TRAINING_DATA_DIRECTORY)
+for timestamp, frame in training_frames:
+    frame_dir = TRAINING_DATA_DIRECTORY / str(timestamp)
+    frame_dir.mkdir(parents=True)
+
+    screenshot_path = frame_dir / "screen.png"
+    if frame.screen is None:
+        continue
+    screenshot_path.write_bytes(frame.screen.screenshot_filepath.read_bytes())
+
+    action_path = frame_dir / "action"
+    with open(action_path, "w") as action_file:
+        action_file.writelines(frame.action.actions)
+    print(frame.action.actions)
