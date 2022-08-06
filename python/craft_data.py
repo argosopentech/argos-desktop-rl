@@ -1,4 +1,5 @@
 import pathlib
+import math
 from collections import defaultdict
 
 DATA_DIRECTORY = pathlib.Path.home() / "data"
@@ -97,3 +98,11 @@ for timestamp in timestamps:
 
     loss = next_x - previous_x
     current_frame.set_loss(loss)
+
+# Select data
+frames_list = frames.items()
+frames_list = sorted(
+    frames_list,
+    key=lambda x: x[1].loss if x[1].loss is not None else -1 * math.inf,
+    reverse=True,
+)
