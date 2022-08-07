@@ -3,11 +3,7 @@ import math
 import shutil
 from collections import defaultdict
 
-DATA_DIRECTORY = pathlib.Path.home() / "data"
-LOG_FILE_PATH = DATA_DIRECTORY / "log.txt"
-ACTIONS_DIRECTORY = DATA_DIRECTORY / "actions"
-SCREENSHOTS_DIRECTORY = DATA_DIRECTORY / "screenshots"
-TRAINING_DATA_DIRECTORY = DATA_DIRECTORY / "training_data"
+from config import *
 
 
 class CraftLog:
@@ -67,6 +63,7 @@ logs = list()
 with open(LOG_FILE_PATH, "r") as log_file:
     logs = log_file.readlines()
 logs = [CraftLog(log_str) for log_str in logs]
+logs = filter(lambda x: x.type == "on_position", logs)
 
 # Read action files
 action_dirs = ACTIONS_DIRECTORY.iterdir()
@@ -120,7 +117,8 @@ SELECTION_RATIO = 0.15
 training_frames = frames_list_sorted[: int(len(frames_list_sorted) * SELECTION_RATIO)]
 
 # Export training data
-shutil.rmtree(TRAINING_DATA_DIRECTORY)
+if TRAINING_DATA_DIRECTORY.exists():
+    shutil.rmtree(TRAINING_DATA_DIRECTORY)
 for timestamp, frame in training_frames:
     frame_dir = TRAINING_DATA_DIRECTORY / str(timestamp)
     frame_dir.mkdir(parents=True)
