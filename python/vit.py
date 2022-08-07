@@ -13,7 +13,6 @@ from config import *
 # https://github.com/lucidrains/vit-pytorch/blob/main/examples/cats_and_dogs.ipynb
 
 device = "cuda"
-MODEL_FILE = 
 
 # Training settings
 batch_size = 64
