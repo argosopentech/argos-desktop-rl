@@ -12,7 +12,7 @@ from config import *
 # Based on vit-pytorch example
 # https://github.com/lucidrains/vit-pytorch/blob/main/examples/cats_and_dogs.ipynb
 
-device = "cuda"
+device = "cpu"
 
 # Training settings
 batch_size = 64
@@ -100,25 +100,28 @@ optimizer = optim.Adam(model.parameters(), lr=lr)
 # scheduler
 scheduler = StepLR(optimizer, step_size=1, gamma=gamma)
 
-for epoch in range(epochs):
-    epoch_loss = 0
-    epoch_accuracy = 0
+if __name__ == "__main__":
+    for epoch in range(epochs):
+        epoch_loss = 0
+        epoch_accuracy = 0
 
-    for data, label in train_loader:
-        data = data.to(device)
-        label = label.to(device)
+        for data, label in train_loader:
+            data = data.to(device)
+            label = label.to(device)
 
-        output = model(data)
-        loss = criterion(output, label)
+            output = model(data)
+            loss = criterion(output, label)
 
-        optimizer.zero_grad()
-        loss.backward()
-        optimizer.step()
+            optimizer.zero_grad()
+            loss.backward()
+            optimizer.step()
 
-        acc = (output.argmax(dim=1) == label).float().mean()
-        epoch_accuracy += acc / len(train_loader)
-        epoch_loss += loss / len(train_loader)
+            acc = (output.argmax(dim=1) == label).float().mean()
+            epoch_accuracy += acc / len(train_loader)
+            epoch_loss += loss / len(train_loader)
 
-    print(f"Epoch : {epoch+1} - loss : {epoch_loss:.4f} - acc: {epoch_accuracy:.4f} \n")
+        print(
+            f"Epoch : {epoch+1} - loss : {epoch_loss:.4f} - acc: {epoch_accuracy:.4f} \n"
+        )
 
-torch.save(model, MODEL_PATH)
+    torch.save(model, MODEL_PATH)
