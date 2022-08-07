@@ -6,14 +6,14 @@ import torch.optim as optim
 from torch.optim.lr_scheduler import StepLR
 from PIL import Image
 from vit_pytorch import ViT
-from linformer import Linformer
 
 from config import *
 
 # Based on vit-pytorch example
 # https://github.com/lucidrains/vit-pytorch/blob/main/examples/cats_and_dogs.ipynb
 
-device = "cpu"
+device = "cuda"
+MODEL_FILE = 
 
 # Training settings
 batch_size = 64
@@ -92,7 +92,7 @@ model = ViT(
     dropout=0.1,
     emb_dropout=0.1,
     channels=4,
-)
+).to(device)
 
 # loss function
 criterion = nn.CrossEntropyLoss()
@@ -121,3 +121,5 @@ for epoch in range(epochs):
         epoch_loss += loss / len(train_loader)
 
     print(f"Epoch : {epoch+1} - loss : {epoch_loss:.4f} - acc: {epoch_accuracy:.4f} \n")
+
+torch.save(model, MODEL_PATH)
